@@ -10,7 +10,7 @@
 -- import Language.Terraform.Core
 -- import Language.Terraform.Aws
 -- import Data.Default
--- 
+--
 -- main = generateFiles "/tmp" $ do
 --    -- Construct an AWS virtual private cloud
 --    vpc <- awsVpc "vpc" "10.30.0.0/16" def
@@ -31,7 +31,7 @@ module Language.Terraform.Core(
   ToResourceField(..),
   ToResourceFieldMap(..),
   IsResource(..),
-  
+
   ResourceField(..),
   ResourceFieldMap(..),
   TF,
@@ -63,6 +63,7 @@ module Language.Terraform.Core(
 
 import Data.Default
 import Data.Maybe(fromMaybe)
+import Data.Semigroup
 import Data.Monoid
 import Data.Typeable
 import Data.Dynamic
@@ -71,6 +72,7 @@ import Control.Monad.Trans.State.Lazy(StateT,get,put,modify',runStateT)
 import System.FilePath((</>))
 import Data.Foldable(for_)
 import Data.String(IsString(..))
+import Data.List (union)
 
 import qualified Data.Map as M
 import qualified Data.Set as S
@@ -92,7 +94,7 @@ data Provider = Provider {
   p_name :: [NameElement],
   p_fields :: ResourceFieldMap
 }
-                
+
 data Resource = Resource {
   r_type :: T.Text,
   r_name :: [NameElement],
@@ -114,6 +116,10 @@ data Provisioner = Provisioner {
 -- we can't actually use a regular map here, as repeated
 -- keys are allowed.
 newtype ResourceFieldMap = ResourceFieldMap { unResourceFieldMap :: [(T.Text,ResourceField)] }
+    deriving Eq
+
+instance Semigroup ResourceFieldMap where
+  ResourceFieldMap m1 <> ResourceFieldMap m2 = ResourceFieldMap (union m1 m2)
 
 instance Monoid ResourceFieldMap where
   mempty = ResourceFieldMap []
@@ -137,6 +143,7 @@ rfmExpandedList field vs = ResourceFieldMap [(field, toResourceField v) | v <- v
 data ResourceField = RF_Text T.Text
                    | RF_List [ResourceField]
                    | RF_Map ResourceFieldMap
+    deriving Eq
 
 
 -- | Typeclass for overloading the conversion of values to
@@ -200,7 +207,7 @@ data ResourceLifeCycle = ResourceLifeCycle {
 
 instance Default ResourceLifeCycle where
   def = ResourceLifeCycle S.empty False
-     
+
 data TFState = TFState {
   tf_nameContext :: [NameElement],
   tf_context :: M.Map TypeRep Dynamic,
@@ -226,7 +233,7 @@ scopedName name0 = do
   return (nameText (name0:context))
 
 -- | Generate a global name based upon the the current scope, returning
--- the name components.  
+-- the name components.
 scopedName' :: NameElement -> TF Name
 scopedName' name0 = do
   context <- tf_nameContext <$> get
@@ -236,7 +243,7 @@ nameContext :: TF [NameElement]
 nameContext = tf_nameContext <$> get
 
 -- | Provide a more specific naming scope for the specified terraform
--- action.  
+-- action.
 withNameScope:: NameElement -> TF a -> TF a
 withNameScope name tfa = do
   s0 <- get
@@ -271,7 +278,7 @@ mkProvider tftype fields  = do
   modify' (\s -> s{tf_providers=provider:tf_providers s})
 
 -- | Internal function for constructing terraform resources
-mkResource :: TFType -> NameElement -> ResourceFieldMap -> TF ResourceId 
+mkResource :: TFType -> NameElement -> ResourceFieldMap -> TF ResourceId
 mkResource tftype name0 fieldmap  = do
   s <- get
   let name = name0:tf_nameContext s
@@ -354,14 +361,14 @@ generateFiles outDir tfa = do
       [ T.template  "resource \"$1\" \"$2\" {" [r_type r, nameText (r_name r)] ]
       <>
       generateFieldMap "  " fieldMap
-      <> 
+      <>
       mconcat [ [T.template "  provisioner \"$1\" {" [pv_type pv]]
                 <>
                 generateFieldMap "    " (pv_fields pv)
                 <>
                 ["  }"]
                 | pv <- provisioners ]
-                
+
       <>
       lifecycle
       <>
@@ -433,4 +440,3 @@ generateFiles outDir tfa = do
     uniqueEof value = head (filter (\eof -> not (T.isInfixOf eof value)) eofs)
       where
         eofs =  ["EOF"] <> ["EOF" <> (T.pack (show n)) | n <- [1,2..]]
-    
