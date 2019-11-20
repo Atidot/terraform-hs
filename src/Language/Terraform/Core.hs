@@ -119,7 +119,7 @@ newtype ResourceFieldMap = ResourceFieldMap { unResourceFieldMap :: [(T.Text,Res
     deriving Eq
 
 instance Semigroup ResourceFieldMap where
-  ResourceFieldMap m1 <> ResourceFieldMap m2 = ResourceFieldMap (union m1 m2)
+  ResourceFieldMap m1 <> ResourceFieldMap m2 = ResourceFieldMap (m1 <> m2)
 
 instance Monoid ResourceFieldMap where
   mempty = ResourceFieldMap []

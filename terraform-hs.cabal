@@ -19,7 +19,7 @@ library
                      , Language.Terraform.Aws
                      , Language.Terraform.Util.Text
   build-depends:       base >= 4.7 && < 5
-                     , containers > 0.5 && < 0.6
+                     , containers > 0.5 && < 0.7
                      , data-default >= 0.5 && < 0.8
                      , filepath >= 1.4 && < 1.5
                      , text >= 1.2 && < 1.3
