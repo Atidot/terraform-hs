@@ -60,16 +60,18 @@ newAws params =
     [ Just ("region", toResourceField (aws_region params))
     , let v = aws_access_key params in if v == "" then Nothing else (Just ("access_key", toResourceField v))
     , let v = aws_secret_key params in if v == "" then Nothing else (Just ("secret_key", toResourceField v))
+    , let v = aws_profile params in if v == "" then Nothing else (Just ("profile", toResourceField v))
     ]
 
 data AwsParams = AwsParams
   { aws_region :: AwsRegion
   , aws_access_key :: T.Text
   , aws_secret_key :: T.Text
+  , aws_profile    :: T.Text
   }
 
 makeAwsParams :: AwsRegion -> AwsParams
-makeAwsParams region = AwsParams region "" ""
+makeAwsParams region = AwsParams region "" "" ""
 
 ----------------------------------------------------------------------
 
@@ -147,10 +149,10 @@ instance ToResourceFieldMap AwsVpcParams where
     <> rfmOptionalDefField "enable_dns_hostnames" False (_vpc_enable_dns_hostnames params)
     <> rfmOptionalDefField "enable_classic_link" False (_vpc_enable_classic_link params)
     <> rfmOptionalDefField "tags" M.empty (_vpc_tags params)
-    
+
 
 instance ToResourceField AwsVpcParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -204,10 +206,10 @@ instance ToResourceFieldMap AwsNatGatewayParams where
   toResourceFieldMap params
     =  rfmField "allocation_id" (_ng_allocation_id params)
     <> rfmField "subnet_id" (_ng_subnet_id params)
-    
+
 
 instance ToResourceField AwsNatGatewayParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -261,10 +263,10 @@ instance ToResourceFieldMap AwsInternetGatewayParams where
   toResourceFieldMap params
     =  rfmField "vpc_id" (_ig_vpc_id params)
     <> rfmOptionalDefField "tags" M.empty (_ig_tags params)
-    
+
 
 instance ToResourceField AwsInternetGatewayParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -336,10 +338,10 @@ instance ToResourceFieldMap AwsSubnetParams where
     <> rfmOptionalDefField "map_public_ip_on_launch" False (_sn_map_public_ip_on_launch params)
     <> rfmOptionalDefField "availability_zone" "" (_sn_availability_zone params)
     <> rfmOptionalDefField "tags" M.empty (_sn_tags params)
-    
+
 
 instance ToResourceField AwsSubnetParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -393,10 +395,10 @@ instance ToResourceFieldMap AwsRouteTableParams where
   toResourceFieldMap params
     =  rfmField "vpc_id" (_rt_vpc_id params)
     <> rfmOptionalDefField "tags" M.empty (_rt_tags params)
-    
+
 
 instance ToResourceField AwsRouteTableParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -460,10 +462,10 @@ instance ToResourceFieldMap AwsRouteParams where
     <> rfmField "destination_cidr_block" (_r_destination_cidr_block params)
     <> rfmOptionalField "nat_gateway_id" (_r_nat_gateway_id params)
     <> rfmOptionalField "gateway_id" (_r_gateway_id params)
-    
+
 
 instance ToResourceField AwsRouteParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -517,10 +519,10 @@ instance ToResourceFieldMap AwsRouteTableAssociationParams where
   toResourceFieldMap params
     =  rfmField "subnet_id" (_rta_subnet_id params)
     <> rfmField "route_table_id" (_rta_route_table_id params)
-    
+
 
 instance ToResourceField AwsRouteTableAssociationParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -559,10 +561,10 @@ instance ToResourceFieldMap IngressRuleParams where
     <> rfmField "to_port" (_ir_to_port params)
     <> rfmField "protocol" (_ir_protocol params)
     <> rfmOptionalDefField "cidr_blocks" [] (_ir_cidr_blocks params)
-    
+
 
 instance ToResourceField IngressRuleParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -601,10 +603,10 @@ instance ToResourceFieldMap EgressRuleParams where
     <> rfmField "to_port" (_er_to_port params)
     <> rfmField "protocol" (_er_protocol params)
     <> rfmOptionalDefField "cidr_blocks" [] (_er_cidr_blocks params)
-    
+
 
 instance ToResourceField EgressRuleParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -690,10 +692,10 @@ instance ToResourceFieldMap AwsSecurityGroupParams where
     <> rfmOptionalDefField "egress" [] (_sg_egress params)
     <> rfmOptionalField "vpc_id" (_sg_vpc_id params)
     <> rfmOptionalDefField "tags" M.empty (_sg_tags params)
-    
+
 
 instance ToResourceField AwsSecurityGroupParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -726,10 +728,10 @@ instance ToResourceFieldMap RootBlockDeviceParams where
     =  rfmOptionalDefField "volume_type" "standard" (_rbd_volume_type params)
     <> rfmOptionalField "volume_size" (_rbd_volume_size params)
     <> rfmOptionalDefField "delete_on_termination" True (_rbd_delete_on_termination params)
-    
+
 
 instance ToResourceField RootBlockDeviceParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -853,10 +855,10 @@ instance ToResourceFieldMap AwsInstanceParams where
     <> rfmOptionalField "iam_instance_profile" (_i_iam_instance_profile params)
     <> rfmOptionalDefField "vpc_security_group_ids" [] (_i_vpc_security_group_ids params)
     <> rfmOptionalDefField "tags" M.empty (_i_tags params)
-    
+
 
 instance ToResourceField AwsInstanceParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -972,10 +974,10 @@ instance ToResourceFieldMap AwsLaunchConfigurationParams where
     <> rfmOptionalDefField "enable_monitoring" True (_lc_enable_monitoring params)
     <> rfmOptionalField "ebs_optimized" (_lc_ebs_optimized params)
     <> rfmOptionalField "root_block_device" (_lc_root_block_device params)
-    
+
 
 instance ToResourceField AwsLaunchConfigurationParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -1069,10 +1071,10 @@ instance ToResourceFieldMap AwsAutoscalingGroupParams where
     <> rfmField "launch_configuration" (_ag_launch_configuration params)
     <> rfmOptionalDefField "load_balancers" [] (_ag_load_balancers params)
     <> rfmExpandedList "tag" (_ag_tag params)
-    
+
 
 instance ToResourceField AwsAutoscalingGroupParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -1105,10 +1107,10 @@ instance ToResourceFieldMap AsgTagParams where
     =  rfmField "key" (_asg_key params)
     <> rfmField "value" (_asg_value params)
     <> rfmField "propagate_at_launch" (_asg_propagate_at_launch params)
-    
+
 
 instance ToResourceField AsgTagParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -1166,10 +1168,10 @@ instance ToResourceFieldMap AwsEipParams where
   toResourceFieldMap params
     =  rfmOptionalDefField "vpc" False (_eip_vpc params)
     <> rfmOptionalField "instance" (_eip_instance params)
-    
+
 
 instance ToResourceField AwsEipParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -1208,10 +1210,10 @@ instance ToResourceFieldMap AccessLogsParams where
     <> rfmOptionalDefField "bucket_prefix" "" (_al_bucket_prefix params)
     <> rfmOptionalDefField "interval" 60 (_al_interval params)
     <> rfmOptionalDefField "enabled" True (_al_enabled params)
-    
+
 
 instance ToResourceField AccessLogsParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -1256,10 +1258,10 @@ instance ToResourceFieldMap ListenerParams where
     <> rfmField "lb_port" (_l_lb_port params)
     <> rfmField "lb_protocol" (_l_lb_protocol params)
     <> rfmOptionalField "ssl_certificate_id" (_l_ssl_certificate_id params)
-    
+
 
 instance ToResourceField ListenerParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -1304,10 +1306,10 @@ instance ToResourceFieldMap HealthCheckParams where
     <> rfmField "target" (_hc_target params)
     <> rfmField "interval" (_hc_interval params)
     <> rfmField "timeout" (_hc_timeout params)
-    
+
 
 instance ToResourceField HealthCheckParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -1403,10 +1405,10 @@ instance ToResourceFieldMap AwsElbParams where
     <> rfmField "listener" (_elb_listener params)
     <> rfmOptionalField "health_check" (_elb_health_check params)
     <> rfmOptionalDefField "tags" M.empty (_elb_tags params)
-    
+
 
 instance ToResourceField AwsElbParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -1433,10 +1435,10 @@ instance ToResourceFieldMap BucketVersioningParams where
   toResourceFieldMap params
     =  rfmOptionalDefField "enabled" False (_bv_enabled params)
     <> rfmOptionalDefField "mfa_delete" False (_bv_mfa_delete params)
-    
+
 
 instance ToResourceField BucketVersioningParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -1469,10 +1471,10 @@ instance ToResourceFieldMap ExpirationParams where
     =  rfmOptionalField "days" (_e_days params)
     <> rfmOptionalField "date" (_e_date params)
     <> rfmOptionalDefField "expired_object_delete_marker" False (_e_expired_object_delete_marker params)
-    
+
 
 instance ToResourceField ExpirationParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -1511,10 +1513,10 @@ instance ToResourceFieldMap LifecycleRuleParams where
     <> rfmField "prefix" (_lr_prefix params)
     <> rfmField "enabled" (_lr_enabled params)
     <> rfmOptionalField "expiration" (_lr_expiration params)
-    
+
 
 instance ToResourceField LifecycleRuleParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -1566,10 +1568,10 @@ instance ToResourceFieldMap AwsElbAttachmentParams where
   toResourceFieldMap params
     =  rfmField "elb" (_elba_elb params)
     <> rfmField "instance" (_elba_instance params)
-    
+
 
 instance ToResourceField AwsElbAttachmentParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -1627,10 +1629,10 @@ instance ToResourceFieldMap AwsAutoscalingAttachmentParams where
     =  rfmField "autoscaling_group_name" (_asa_autoscaling_group_name params)
     <> rfmOptionalField "elb" (_asa_elb params)
     <> rfmOptionalField "alb_target_group_arn" (_asa_alb_target_group_arn params)
-    
+
 
 instance ToResourceField AwsAutoscalingAttachmentParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -1675,10 +1677,10 @@ instance ToResourceFieldMap CorsRuleParams where
     <> rfmField "allowed_origins" (_cors_allowed_origins params)
     <> rfmOptionalDefField "expose_headers" [] (_cors_expose_headers params)
     <> rfmOptionalField "max_age_seconds" (_cors_max_age_seconds params)
-    
+
 
 instance ToResourceField CorsRuleParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -1756,10 +1758,10 @@ instance ToResourceFieldMap AwsS3BucketParams where
     <> rfmOptionalField "versioning" (_s3_versioning params)
     <> rfmOptionalField "lifecycle_rule" (_s3_lifecycle_rule params)
     <> rfmOptionalField "cors_rule" (_s3_cors_rule params)
-    
+
 
 instance ToResourceField AwsS3BucketParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -1829,10 +1831,10 @@ instance ToResourceFieldMap AwsS3BucketObjectParams where
     <> rfmField "key" (_s3o_key params)
     <> rfmOptionalField "source" (_s3o_source params)
     <> rfmOptionalField "content" (_s3o_content params)
-    
+
 
 instance ToResourceField AwsS3BucketObjectParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -1896,10 +1898,10 @@ instance ToResourceFieldMap AwsIamUserParams where
     =  rfmField "name" (_iamu_name' params)
     <> rfmOptionalDefField "path" "/" (_iamu_path params)
     <> rfmOptionalDefField "force_destroy" False (_iamu_force_destroy params)
-    
+
 
 instance ToResourceField AwsIamUserParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -1957,10 +1959,10 @@ instance ToResourceFieldMap AwsIamUserPolicyParams where
     =  rfmField "name" (_iamup_name params)
     <> rfmField "policy" (_iamup_policy params)
     <> rfmField "user" (_iamup_user params)
-    
+
 
 instance ToResourceField AwsIamUserPolicyParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -2012,10 +2014,10 @@ instance ToResourceFieldMap AwsIamUserPolicyAttachmentParams where
   toResourceFieldMap params
     =  rfmField "user" (_iamupa_user params)
     <> rfmField "policy_arn" (_iamupa_policy_arn params)
-    
+
 
 instance ToResourceField AwsIamUserPolicyAttachmentParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -2089,10 +2091,10 @@ instance ToResourceFieldMap AwsIamRoleParams where
     <> rfmOptionalDefField "name_prefix" "" (_iamr_name_prefix params)
     <> rfmField "assume_role_policy" (_iamr_assume_role_policy params)
     <> rfmOptionalDefField "path" "" (_iamr_path params)
-    
+
 
 instance ToResourceField AwsIamRoleParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -2170,10 +2172,10 @@ instance ToResourceFieldMap AwsIamInstanceProfileParams where
     <> rfmOptionalDefField "path" "/" (_iamip_path params)
     <> rfmOptionalDefField "roles" [] (_iamip_roles params)
     <> rfmOptionalField "role" (_iamip_role params)
-    
+
 
 instance ToResourceField AwsIamInstanceProfileParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -2233,10 +2235,10 @@ instance ToResourceFieldMap AwsIamRolePolicyParams where
     =  rfmField "name" (_iamrp_name params)
     <> rfmField "policy" (_iamrp_policy params)
     <> rfmField "role" (_iamrp_role params)
-    
+
 
 instance ToResourceField AwsIamRolePolicyParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -2292,10 +2294,10 @@ instance ToResourceFieldMap AwsSnsTopicParams where
   toResourceFieldMap params
     =  rfmField "name" (_sns_name params)
     <> rfmOptionalDefField "display_name" "" (_sns_display_name params)
-    
+
 
 instance ToResourceField AwsSnsTopicParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -2427,10 +2429,10 @@ instance ToResourceFieldMap AwsCloudwatchMetricAlarmParams where
     <> rfmOptionalDefField "insufficient_data_actions" [] (_cma_insufficient_data_actions params)
     <> rfmOptionalDefField "ok_actions" [] (_cma_ok_actions params)
     <> rfmOptionalDefField "unit" "" (_cma_unit params)
-    
+
 
 instance ToResourceField AwsCloudwatchMetricAlarmParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -2572,10 +2574,10 @@ instance ToResourceFieldMap AwsRdsClusterParams where
     <> rfmOptionalField "db_subnet_group_name" (_rc_db_subnet_group_name params)
     <> rfmOptionalDefField "backup_retention_period" 0 (_rc_backup_retention_period params)
     <> rfmOptionalDefField "tags" M.empty (_rc_tags params)
-    
+
 
 instance ToResourceField AwsRdsClusterParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -2647,10 +2649,10 @@ instance ToResourceFieldMap AwsRdsClusterInstanceParams where
     <> rfmOptionalField "identifier" (_rci_identifier params)
     <> rfmField "instance_class" (_rci_instance_class params)
     <> rfmOptionalField "db_parameter_group_name" (_rci_db_parameter_group_name params)
-    
+
 
 instance ToResourceField AwsRdsClusterInstanceParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -2712,10 +2714,10 @@ instance ToResourceFieldMap AwsRdsClusterParameterGroupParams where
     =  rfmField "name" (_rcpg_name' params)
     <> rfmField "family" (_rcpg_family params)
     <> rfmExpandedList "parameter" (_rcpg_parameter params)
-    
+
 
 instance ToResourceField AwsRdsClusterParameterGroupParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -2742,10 +2744,10 @@ instance ToResourceFieldMap RcpgParameterParams where
   toResourceFieldMap params
     =  rfmField "name" (_rcpgp_name params)
     <> rfmField "value" (_rcpgp_value params)
-    
+
 
 instance ToResourceField RcpgParameterParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -2899,10 +2901,10 @@ instance ToResourceFieldMap AwsDbInstanceParams where
     <> rfmOptionalDefField "tags" M.empty (_db_tags params)
     <> rfmOptionalDefField "skip_final_snapshot" False (_db_skip_final_snapshot params)
     <> rfmOptionalField "final_snapshot_identifier" (_db_final_snapshot_identifier params)
-    
+
 
 instance ToResourceField AwsDbInstanceParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -2964,10 +2966,10 @@ instance ToResourceFieldMap AwsDbParameterGroupParams where
     =  rfmField "name" (_dbpg_name' params)
     <> rfmField "family" (_dbpg_family params)
     <> rfmExpandedList "parameter" (_dbpg_parameter params)
-    
+
 
 instance ToResourceField AwsDbParameterGroupParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -3000,10 +3002,10 @@ instance ToResourceFieldMap DbpgParameterParams where
     =  rfmField "name" (_dbpgp_name params)
     <> rfmField "value" (_dbpgp_value params)
     <> rfmOptionalField "apply_method" (_dbpgp_apply_method params)
-    
+
 
 instance ToResourceField DbpgParameterParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -3073,10 +3075,10 @@ instance ToResourceFieldMap AwsDbSubnetGroupParams where
     <> rfmOptionalDefField "description" "" (_dsg_description params)
     <> rfmField "subnet_ids" (_dsg_subnet_ids params)
     <> rfmOptionalDefField "tags" M.empty (_dsg_tags params)
-    
+
 
 instance ToResourceField AwsDbSubnetGroupParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -3154,10 +3156,10 @@ instance ToResourceFieldMap AwsRoute53ZoneParams where
     <> rfmOptionalField "vpc_region" (_r53z_vpc_region params)
     <> rfmOptionalDefField "force_destroy" False (_r53z_force_destroy params)
     <> rfmOptionalDefField "tags" M.empty (_r53z_tags params)
-    
+
 
 instance ToResourceField AwsRoute53ZoneParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -3190,10 +3192,10 @@ instance ToResourceFieldMap Route53AliasParams where
     =  rfmField "zone_id" (_r53a_zone_id params)
     <> rfmField "name" (_r53a_name params)
     <> rfmField "evaluate_target_health" (_r53a_evaluate_target_health params)
-    
+
 
 instance ToResourceField Route53AliasParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -3271,10 +3273,10 @@ instance ToResourceFieldMap AwsRoute53RecordParams where
     <> rfmOptionalField "ttl" (_r53r_ttl params)
     <> rfmOptionalDefField "records" [] (_r53r_records params)
     <> rfmOptionalField "alias" (_r53r_alias params)
-    
+
 
 instance ToResourceField AwsRoute53RecordParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -3378,10 +3380,10 @@ instance ToResourceFieldMap AwsSqsQueueParams where
     <> rfmOptionalField "redrive_policy" (_sqs_redrive_policy params)
     <> rfmOptionalDefField "fifo_queue" False (_sqs_fifo_queue params)
     <> rfmOptionalDefField "content_based_deduplication" False (_sqs_content_based_deduplication params)
-    
+
 
 instance ToResourceField AwsSqsQueueParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -3433,10 +3435,10 @@ instance ToResourceFieldMap AwsSqsQueuePolicyParams where
   toResourceFieldMap params
     =  rfmField "queue_url" (_sqsp_queue_url params)
     <> rfmField "policy" (_sqsp_policy params)
-    
+
 
 instance ToResourceField AwsSqsQueuePolicyParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -3490,10 +3492,10 @@ makeAwsEcrRepositoryParams name' = AwsEcrRepositoryParams
 instance ToResourceFieldMap AwsEcrRepositoryParams where
   toResourceFieldMap params
     =  rfmField "name" (_ecr_name' params)
-    
+
 
 instance ToResourceField AwsEcrRepositoryParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -3565,10 +3567,10 @@ instance ToResourceFieldMap AwsCloudwatchLogGroupParams where
     <> rfmOptionalField "retention_in_days" (_cwlg_retention_in_days' params)
     <> rfmOptionalField "kms_key_id" (_cwlg_kms_key_id params)
     <> rfmOptionalDefField "tags" M.empty (_cwlg_tags params)
-    
+
 
 instance ToResourceField AwsCloudwatchLogGroupParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -3607,10 +3609,10 @@ instance ToResourceFieldMap EbsOptionsParams where
     <> rfmOptionalField "volume_type" (_edeo_volume_type params)
     <> rfmOptionalField "volume_size" (_edeo_volume_size params)
     <> rfmOptionalField "iops" (_edeo_iops params)
-    
+
 
 instance ToResourceField EbsOptionsParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -3661,10 +3663,10 @@ instance ToResourceFieldMap ClusterConfigParams where
     <> rfmOptionalField "dedicated_master_type" (_edcc_dedicated_master_type params)
     <> rfmOptionalField "dedicated_master_count" (_edcc_dedicated_master_count params)
     <> rfmOptionalField "zone_awareness_enabled" (_edcc_zone_awareness_enabled params)
-    
+
 
 instance ToResourceField ClusterConfigParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -3685,10 +3687,10 @@ makeSnapshotOptionsParams automatedSnapshotStartHour = SnapshotOptionsParams
 instance ToResourceFieldMap SnapshotOptionsParams where
   toResourceFieldMap params
     =  rfmField "automated_snapshot_start_hour" (_edso_automated_snapshot_start_hour params)
-    
+
 
 instance ToResourceField SnapshotOptionsParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -3784,10 +3786,10 @@ instance ToResourceFieldMap AwsElasticsearchDomainParams where
     <> rfmOptionalField "snapshot_options" (_ed_snapshot_options params)
     <> rfmOptionalDefField "elasticsearch_version" "1.5" (_ed_elasticsearch_version params)
     <> rfmOptionalDefField "tags" M.empty (_ed_tags params)
-    
+
 
 instance ToResourceField AwsElasticsearchDomainParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -3841,10 +3843,10 @@ instance ToResourceFieldMap AwsElasticsearchDomainPolicyParams where
   toResourceFieldMap params
     =  rfmField "domain_name" (_edp_domain_name params)
     <> rfmField "access_policies" (_edp_access_policies params)
-    
+
 
 instance ToResourceField AwsElasticsearchDomainPolicyParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -3978,10 +3980,10 @@ instance ToResourceFieldMap AwsLbParams where
     <> rfmOptionalDefField "enable_http2" True (_lb_enable_http2 params)
     <> rfmOptionalField "ip_address_type" (_lb_ip_address_type params)
     <> rfmOptionalDefField "tags" M.empty (_lb_tags params)
-    
+
 
 instance ToResourceField AwsLbParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -4008,10 +4010,10 @@ instance ToResourceFieldMap SubnetMappingParams where
   toResourceFieldMap params
     =  rfmField "subnet_id" (_sn_subnet_id params)
     <> rfmField "allocation_id" (_sn_allocation_id params)
-    
+
 
 instance ToResourceField SubnetMappingParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -4091,10 +4093,10 @@ instance ToResourceFieldMap AwsLbListenerParams where
     <> rfmOptionalField "ssl_policy" (_lbl_ssl_policy params)
     <> rfmOptionalField "certificate_arn" (_lbl_certificate_arn params)
     <> rfmField "default_action" (_lbl_default_action params)
-    
+
 
 instance ToResourceField AwsLbListenerParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -4138,10 +4140,10 @@ instance ToResourceFieldMap ListenerActionParams where
   toResourceFieldMap params
     =  rfmField "target_group_arn" (_la_target_group_arn params)
     <> rfmField "type" (_la_type params)
-    
+
 
 instance ToResourceField ListenerActionParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -4266,10 +4268,10 @@ instance ToResourceFieldMap AwsLbTargetGroupParams where
     <> rfmOptionalField "health_check" (_lbtg_health_check params)
     <> rfmOptionalDefField "target_type" TG_instance (_lbtg_target_type params)
     <> rfmOptionalDefField "tags" M.empty (_lbtg_tags params)
-    
+
 
 instance ToResourceField AwsLbTargetGroupParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -4310,10 +4312,10 @@ instance ToResourceFieldMap TargetGroupStickinessParams where
     =  rfmField "type" (_tgs_type params)
     <> rfmOptionalDefField "cookie_duration" 86400 (_tgs_cookie_duration params)
     <> rfmOptionalDefField "enabled" True (_tgs_enabled params)
-    
+
 
 instance ToResourceField TargetGroupStickinessParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -4383,10 +4385,10 @@ instance ToResourceFieldMap TargetGroupHealthCheckParams where
     <> rfmOptionalDefField "healthy_threshold" 3 (_tghc_healthy_threshold params)
     <> rfmOptionalDefField "unhealthy_threshold" 3 (_tghc_unhealthy_threshold params)
     <> rfmOptionalField "matcher" (_tghc_matcher params)
-    
+
 
 instance ToResourceField TargetGroupHealthCheckParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -4452,10 +4454,10 @@ instance ToResourceFieldMap AwsLbTargetGroupAttachmentParams where
     <> rfmField "target_id" (_lbtga_target_id params)
     <> rfmOptionalField "port" (_lbtga_port params)
     <> rfmOptionalField "availability_zone" (_lbtga_availability_zone params)
-    
+
 
 instance ToResourceField AwsLbTargetGroupAttachmentParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -4523,10 +4525,10 @@ instance ToResourceFieldMap AwsLbListenerRuleParams where
     <> rfmOptionalField "priority" (_lblr_priority params)
     <> rfmField "action" (_lblr_action params)
     <> rfmField "condition" (_lblr_condition params)
-    
+
 
 instance ToResourceField AwsLbListenerRuleParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -4553,10 +4555,10 @@ instance ToResourceFieldMap ListenerConditionParams where
   toResourceFieldMap params
     =  rfmField "field" (_lblrc_field params)
     <> rfmField "values" (_lblrc_values params)
-    
+
 
 instance ToResourceField ListenerConditionParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -4632,10 +4634,10 @@ instance ToResourceFieldMap AwsAcmCertificateParams where
     <> rfmOptionalDefField "subject_alternative_names" [] (_ac_subject_alternative_names params)
     <> rfmField "validation_method" (_ac_validation_method params)
     <> rfmOptionalDefField "tags" M.empty (_ac_tags params)
-    
+
 
 instance ToResourceField AwsAcmCertificateParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
 
 ----------------------------------------------------------------------
 
@@ -4696,7 +4698,7 @@ instance ToResourceFieldMap AwsAcmCertificateValidationParams where
   toResourceFieldMap params
     =  rfmField "certificate_arn" (_acv_certificate_arn params)
     <> rfmOptionalDefField "validation_record_fqdns" [] (_acv_validation_record_fqdns params)
-    
+
 
 instance ToResourceField AwsAcmCertificateValidationParams where
-  toResourceField = RF_Map . toResourceFieldMap 
+  toResourceField = RF_Map . toResourceFieldMap
